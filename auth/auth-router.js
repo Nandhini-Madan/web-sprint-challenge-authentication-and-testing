@@ -1,19 +1,22 @@
 const router = require('express').Router();
 const user = require("./auth-model")
 const bycrypt = require("bcryptjs")
+const jwt=require("jsonwebtoken")
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res,next) => {
   // implement registration
   try {
     const { username, password } = req.body
+    console.log(req.body)
     if (!username || !password) {
+      console.log(username)
       res.status(401).json({
         message: "Username or password not available"
       })
     }
     else {
       const users = await user.findUserName(username)
-      if (!users) {
+      if (users) {
         res.status(401).json({
           message: "Username name is not available"
         })
@@ -24,6 +27,7 @@ router.post('/register', async (req, res) => {
           password: await bycrypt.hash(password, 14)
         })
         res.status(201).json(newUser)
+        next()
       }
 
     }
@@ -33,34 +37,57 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res,next) => {
   // implement login
   try{
-    const {username,password}=req.body
+    const {username,password} = req.body
+    console.log("login",req.body)
     if(!username||!password){
       res.status(401).json({
         message:"Username or password not available"
       })
     }
     else{
-      const user =await user.findUserName(username)
-      if(!user){
+      console.log("hi")
+      const login =await user.findUserName(username)
+      console.log("login",login)
+      if(!login){
         res.status(401).json({
           message:"Invalid User credentials"
         })
       }
       else{
-        const passwordValid=await bycrypt.compare(password,user.password)
+        console.log(login.password)
+        const passwordValid=await bycrypt.compare(password,login.password)
+        
         if(!passwordValid){
+          console.log(passwordValid,"password")
         //  const token=
-          res.status(200).json({
-            message:`Welcome ${user.username}`
+          res.status(401).json({
+            message:"Invalid password"
           })
+        }
+        else{
+         /* const token=jwt.sign({
+            userID:user.id,
+            userRole:user.role,
+      
+          },"keep it secret,keep it safe")
+          res.cookie("token",token)*/
+          const token =
+          res.json({
+            message:`Welcome ${login.username}`,
+            
+          })
+          
         }
       }
     }
+    next()
   }
-  catch(err){}
+  catch(err){
+    next(err)
+  }
 
 });
 

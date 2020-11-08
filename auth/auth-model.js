@@ -1,22 +1,24 @@
 const db=require("../database/dbConfig")
 
-function findUserName(username){
-    return db("users")
+async function findUserName(username){
+    console.log(username)
+    return await db("users")
             .where("username",username)
             .first("id","username","password")
 
 }
-function addUser(data){
-   const [id]=db("users").insert(data)
+async function addUser(data){
+    console.log(data,"data")
+   const [id]= await db("users").insert(data)
    return findByUserId(id)
 }
-function findByUserId(id){
-    return db("users")
+async function findByUserId(id){
+    return await db("users")
             .where("id",id)
             .first("id","username","password")
 }
 function find(){
-    
+
 }
 
 module.exports={
