@@ -11,6 +11,11 @@ const server = express();
 server.use(helmet());
 server.use(cors());
 server.use(express.json());
+server.get("/",(req,res,next)=>{
+    res.json({
+        message:"Welcome to our API"
+    })
+})
 
 server.use('/api/auth', authRouter);
 server.use('/api/jokes', authenticate, jokesRouter);
