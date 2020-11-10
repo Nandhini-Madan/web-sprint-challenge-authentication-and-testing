@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const user = require("./auth-model")
 const bycrypt = require("bcryptjs")
-const jwt=require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 
-router.post('/register', async (req, res,next) => {
+router.post('/register', async (req, res, next) => {
   // implement registration
   try {
     const { username, password } = req.body
@@ -37,55 +37,55 @@ router.post('/register', async (req, res,next) => {
   }
 });
 
-router.post('/login', async (req, res,next) => {
+router.post('/login', async (req, res, next) => {
   // implement login
-  try{
-    const {username,password} = req.body
-    console.log("login",req.body)
-    if(!username||!password){
+  try {
+    const { username, password } = req.body
+    console.log("login", req.body)
+    if (!username || !password) {
       res.status(401).json({
-        message:"Username or password not available"
+        message: "Username or password not available"
       })
     }
-    else{
+    else {
       console.log("hi")
-      const login =await user.findUserName(username)
-      console.log("login",login)
-      if(!login){
+      const login = await user.findUserName(username)
+      console.log("login", login)
+      if (!login) {
         res.status(401).json({
-          message:"Invalid User credentials"
+          message: "Invalid User credentials"
         })
       }
-      else{
+      else {
         console.log(login.password)
-        const passwordValid=await bycrypt.compare(password,login.password)
-        
-        if(!passwordValid){
-          console.log(passwordValid,"password")
-        //  const token=
+        const passwordValid = await bycrypt.compare(password, login.password)
+
+        if (!passwordValid) {
+          console.log(passwordValid, "password")
+          //  const token=
           res.status(401).json({
-            message:"Invalid password"
+            message: "Invalid password"
           })
         }
-        else{
-         /* const token=jwt.sign({
-            userID:user.id,
-            userRole:user.role,
-      
-          },"keep it secret,keep it safe")
-          res.cookie("token",token)*/
-          const token =
-          res.json({
-            message:`Welcome ${login.username}`,
-            
+        else {
+          /* const token=jwt.sign({
+             userID:user.id,
+             userRole:user.role,
+       
+           },"keep it secret,keep it safe")
+           res.cookie("token",token)*/
+          const tokenPayload = { subject: user.id, userame: user.username };
+          const token = jwt.sign(tokenPayload, "keep it secret,keep it safe");
+          res.cookie("token",token)
+          res.status(200).json({
+            message: token
           })
-          
         }
       }
     }
     next()
   }
-  catch(err){
+  catch (err) {
     next(err)
   }
 
