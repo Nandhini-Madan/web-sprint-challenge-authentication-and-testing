@@ -74,11 +74,11 @@ router.post('/login', async (req, res, next) => {
        
            },"keep it secret,keep it safe")
            res.cookie("token",token)*/
-          const tokenPayload = { subject: user.id, username: user.username };
+          const tokenPayload = { subject: login.id, username: login.username };
           const token = jwt.sign(tokenPayload, "keep it secret,keep it safe");
           res.cookie("token",token)
           res.status(200).json({
-            message: token
+            message: `welcome ${login.username}`
           })
         }
       }

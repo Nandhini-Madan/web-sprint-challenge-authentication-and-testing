@@ -12,7 +12,7 @@ server.use(helmet());
 server.use(cors());
 server.use(express.json());
 server.get("/",(req,res,next)=>{
-    res.json({
+    res.status(200).json({
         message:"Welcome to our API"
     })
 })
