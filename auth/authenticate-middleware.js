@@ -27,8 +27,8 @@ async function restrict(req, res, next) {
 
   try {
     //const token =res.cookies.token
-    const token =req.headers.authorization
-    //const token = req.cookies
+    //const token =req.headers.authorization
+    const token = req.cookies.token
     console.log("token", token, "cookies", req.cookies)
     if (!token) {
       return res.status(401).json({ message: 'shall not pass!' });

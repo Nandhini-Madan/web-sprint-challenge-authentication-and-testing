@@ -3,6 +3,7 @@ const user = require("./auth-model")
 const bycrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
+
 router.post('/register', async (req, res, next) => {
   // implement registration
   try {
@@ -74,7 +75,7 @@ router.post('/login', async (req, res, next) => {
        
            },"keep it secret,keep it safe")
            res.cookie("token",token)*/
-          const tokenPayload = { subject: login.id, username: login.username };
+          const tokenPayload = { userID: login.id, username: login.username };
           const token = jwt.sign(tokenPayload, "keep it secret,keep it safe");
           res.cookie("token",token)
           res.status(200).json({
